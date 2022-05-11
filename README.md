@@ -1,3 +1,5 @@
-# Peolic's random userscripts (NSFW 🔞)
+# Peolic's userscripts (NSFW 🔞)
 
-Random userscripts.
+Random userscripts.  
+
+More userscripts: https://peolic.github.io/peolic/
