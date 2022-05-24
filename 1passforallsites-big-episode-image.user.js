@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        1 Pass For All Sites - Better Episode Image
 // @author      peolic
-// @version     1.1
+// @version     1.2
 // @description Attempt to grab a better episode image.
 // @icon        https://1passforallsites.com/media/favicon/favicon-32x32.png
 // @namespace   https://github.com/peolic
@@ -18,8 +18,11 @@
   if (target?.src.endsWith('/movie_tn.jpg')) {
     const currentEpisode = window.location.href.match(/(^.+\/\d+\/?)/)[1];
     const thumbLink = /** @type {HTMLAnchorElement} */ (document.querySelector(`a[href^="${currentEpisode}"`));
+    if (!thumbLink)
+      return;
+
     const thumbSrc = thumbLink.querySelector('img').src;
-    const bigSrc = thumbSrc.replace('mainthumb.jpg', 'big.jpg');
+    const bigSrc = thumbSrc.endsWith('/mainthumb.jpg') ? thumbSrc.replace('mainthumb.jpg', 'big.jpg') : null;
 
     const useThumb = () => target.src = thumbSrc;
 
@@ -29,6 +32,6 @@
         useThumb();
     });
 
-    target.src = bigSrc;
+    target.src = bigSrc ?? thumbSrc;
   }
 })();
