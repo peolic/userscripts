@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        StashDB ID Copy Buttons
 // @author      peolic
-// @version     1.0
+// @version     1.1
 // @description Adds copy ID buttons to StashDB
 // @namespace   https://github.com/peolic
 // @include     https://stashdb.org/*
@@ -15,6 +15,7 @@
 //@ts-check
 (() => {
   function main() {
+    //@ts-expect-error
     GM.addStyle(`
 button.injected-copy-id {
     color: #212529;
@@ -30,7 +31,7 @@ button.injected-copy-id:focus {
     dispatcher();
     window.addEventListener(locationChanged, dispatcher);
   }
-  
+
   function splitLocation(loc=undefined) {
     if (loc === undefined) loc = window.location;
     else loc = new URL(loc);
@@ -64,12 +65,15 @@ button.injected-copy-id:focus {
     button.classList.add('btn', 'btn-light', 'injected-copy-id');
     button.textContent = '📋';
     button.title = 'Copy ID';
-    button.addEventListener('mouseover', () => {
-      button.title = `Copy ID:\n${uuidGetter()}`;
+    button.addEventListener('mouseover', (e) => {
+      button.title = !e.ctrlKey
+        ? `Copy ID:\n${uuidGetter(e)}\nHold CTRL to copy as Markdown link.`
+        : `Copy link as Markdown:\n${uuidGetter(e)}`;
     });
     button.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
+      //@ts-expect-error
       GM.setClipboard(uuidGetter(e));
       button.textContent = '✔';
       setStyles(button, { backgroundColor: 'yellow', fontWeight: '800' });
@@ -92,10 +96,10 @@ button.injected-copy-id:focus {
         const button = makeCopyIDButton(false, (e) => {
           const [object, ident] = splitLocation();
           if (!e?.ctrlKey) return ident;
-        const performerName =
-          /** @type {HTMLElement[]} */
-          (Array.from(performerInfo.querySelectorAll('h3 > span, h3 > small')))
-            .map(e => e.innerText).join(' ');
+          const performerName =
+            /** @type {HTMLElement[]} */
+            (Array.from(performerInfo.querySelectorAll('h3 > span, h3 > small')))
+              .map(e => e.innerText).join(' ');
           return `[${performerName}](/${object}/${ident})`;
         });
         let container = target.querySelector(':scope .text-end');
@@ -115,13 +119,21 @@ button.injected-copy-id:focus {
       return;
     }
     if (object === 'scenes') {
-      await elementReadyIn('.scene-info', 2000);
-      const target = document.querySelector('.card-header > .float-end');
+      const sceneInfo = await elementReadyIn('.scene-info', 2000);
+      const target = sceneInfo?.querySelector('.card-header > .float-end');
       if (!target || target.querySelector('button.injected-copy-id')) {
         return;
       }
       try {
-        const button = makeCopyIDButton(false);
+        const button = makeCopyIDButton(false, (e) => {
+          const [object, ident] = splitLocation();
+          if (!e?.ctrlKey) return ident;
+          const sceneTitle = 
+            /** @type {HTMLElement[]} */
+            (Array.from(sceneInfo.querySelectorAll('h6 > a, h3 > span')))
+              .map(e => e.innerText).join(' - ');
+          return `[${sceneTitle}](/${object}/${ident})`;
+        });
         button.classList.add('ms-2');
         target.appendChild(button);
       } catch (error) {
@@ -139,7 +151,8 @@ button.injected-copy-id:focus {
         const button = makeCopyIDButton(true, (e) => {
           const [object, ident] = splitLocation();
           if (!e?.ctrlKey) return ident;
-          return `[${document.querySelector('.studio-title h3').textContent.trim()}](/${object}/${ident})`;
+          const studioName = document.querySelector('.studio-title h3').textContent.trim();
+          return `[${studioName}](/${object}/${ident})`;
         });
         button.classList.add('ms-2');
         target.appendChild(button);
@@ -154,7 +167,12 @@ button.injected-copy-id:focus {
         return;
       }
       try {
-        const button = makeCopyIDButton(false);
+        const button = makeCopyIDButton(false, (e) => {
+          const [object, ident] = splitLocation();
+          if (!e?.ctrlKey) return ident;
+          const tagName = document.querySelector('h3 > em').textContent.trim();
+          return `[${tagName}](/${object}/${ident})`;
+        });
         button.classList.add('ms-2');
         target.appendChild(button);
       } catch (error) {
