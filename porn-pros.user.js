@@ -1,24 +1,24 @@
 // ==UserScript==
 // @name        Porn Pros
 // @author      peolic
-// @version     1.3
+// @version     1.4
 // @description Fix duration on Porn Pros sites
 // @icon        https://i.ibb.co/KjtvXWX/network.png
 // @namespace   https://github.com/peolic
-// @include     https://pornpros.com/video/*
-// @include     https://pornprosnetwork.com/video/*
-// @include     https://passion-hd.com/video/*
-// @include     https://puremature.com/video/*
-// @include     https://povd.com/video/*
-// @include     https://castingcouch-x.com/video/*
-// @include     https://tiny4k.com/video/*
-// @include     https://fantasyhd.com/video/*
-// @include     https://exotic4k.com/video/*
-// @include     https://lubed.com/video/*
-// @include     https://holed.com/video/*
-// @include     https://spyfam.com/video/*
-// @include     https://nannyspy.com/video/*
-// @include     https://bbcpie.com/video/*
+// @match       https://pornpros.com/video/*
+// @match       https://pornprosnetwork.com/video/*
+// @match       https://passion-hd.com/video/*
+// @match       https://puremature.com/video/*
+// @match       https://povd.com/video/*
+// @match       https://castingcouch-x.com/video/*
+// @match       https://tiny4k.com/video/*
+// @match       https://fantasyhd.com/video/*
+// @match       https://exotic4k.com/video/*
+// @match       https://lubed.com/video/*
+// @match       https://holed.com/video/*
+// @match       https://spyfam.com/video/*
+// @match       https://nannyspy.com/video/*
+// @match       https://bbcpie.com/video/*
 // @grant       none
 // @homepageURL https://github.com/peolic/userscripts
 // @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/porn-pros.user.js

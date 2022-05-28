@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name        Kink - Find Duration
 // @author      peolic
-// @version     1.01
+// @version     1.02
 // @description Add "find duration" link to shoot pages
 // @icon        https://www.kink.com/favicon-32x32.png
 // @namespace   https://github.com/peolic
-// @include     https://www.kink.com/shoot/*
+// @match       https://www.kink.com/shoot/*
 // @grant       GM.addStyle
 // @homepageURL https://github.com/peolic/userscripts
 // @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/kink-find-duration.user.js

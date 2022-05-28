@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name        StashDB ID Copy Buttons
 // @author      peolic
-// @version     1.3
+// @version     1.4
 // @description Adds copy ID buttons to StashDB
 // @namespace   https://github.com/peolic
-// @include     https://stashdb.org/*
+// @match       https://stashdb.org/*
 // @grant       GM.setClipboard
 // @grant       GM.addStyle
 // @homepageURL https://github.com/peolic/userscripts

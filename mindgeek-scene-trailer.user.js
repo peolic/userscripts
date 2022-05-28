@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name        MindGeek Scene Trailer
 // @author      peolic
-// @version     0.3
+// @version     0.4
 // @description show trailers on MindGeek sites
 // @namespace   https://github.com/peolic
-// @include     *://*/scene/*/*
+// @match       http*://*/scene/*/*
 // @exclude     https://www.bellesafilms.com/*
 // @grant       none
 // @homepageURL https://github.com/peolic/userscripts
@@ -12,7 +12,7 @@
 // @updateURL   https://raw.githubusercontent.com/peolic/userscripts/main/mindgeek-scene-trailer.user.js
 // ==/UserScript==
 
-(async () => {  
+(async () => {
   const wait = (/** @type {number} */ ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const getTitle = () => document.querySelector('h1')?.textContent || document.querySelector('h2')?.textContent || '_____';
   const getImg = () => document.querySelector(`section img[src^="https://media-public-ht.project1content.com"][alt^="${getTitle()}"]`);
@@ -27,7 +27,7 @@
   video.controls = true;
   video.className = img.className;
   video.poster = img.src;
-  
+
   // poster to video:
   // "https://media-public-ht.project1content.com/m=eaSaaTbWx/ee6/b6a/057/993/459/3b8/4d0/bc1/f32/d7b/7d/poster/poster_01.jpg"
   // "https://prog-public-ht.project1content.com/ee6/b6a/057/993/459/3b8/4d0/bc1/f32/d7b/7d/mediabook/mediabook_720p.mp4"
