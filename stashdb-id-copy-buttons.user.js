@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        StashDB ID Copy Buttons
 // @author      peolic
-// @version     1.2
+// @version     1.3
 // @description Adds copy ID buttons to StashDB
 // @namespace   https://github.com/peolic
 // @include     https://stashdb.org/*
@@ -131,7 +131,7 @@ button.injected-copy-id:focus {
           const sceneTitle = 
             /** @type {HTMLElement[]} */
             ([sceneInfo.querySelector('h6 > a'), sceneInfo.querySelector('h3 > span')])
-              .map(e => e.innerText).join(': ');
+              .map(e => e.innerText).join(' \u{2013} ');
           return `[${sceneTitle}](/${object}/${ident})`;
         });
         button.classList.add('ms-2');
