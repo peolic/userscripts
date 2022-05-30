@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        1 Pass For All Sites - Better Episode Image
 // @author      peolic
-// @version     1.4
+// @version     1.5
 // @description Attempt to grab a better episode image.
 // @icon        https://1passforallsites.com/media/favicon/favicon-32x32.png
 // @namespace   https://github.com/peolic
@@ -23,22 +23,39 @@
       return;
 
     const thumbSrc = thumbLink.querySelector('img').src;
+    const flashSrc = thumbSrc.endsWith('/mainthumb.jpg') ? thumbSrc.replace('mainthumb.jpg', 'flash.jpg') : null;
     const bigSrc = thumbSrc.endsWith('/mainthumb.jpg') ? thumbSrc.replace('mainthumb.jpg', 'big.jpg') : null;
 
-    const useThumb = () => {
-      if (target.src === thumbSrc) {
-        target.src = originalSrc;
-        return target.removeEventListener('error', useThumb);
+    const images = [bigSrc, flashSrc, thumbSrc].filter((i) => !!i);
+    let errors = 0;
+
+    if (images.length === 0)
+      return;
+
+    const handleError = () => {
+      if (errors < images.length) {
+        target.src = images[errors];
+        errors++;
+        return;
       }
-      target.src = thumbSrc;
+      target.src = originalSrc;
+      unwatch();
     };
 
-    target.addEventListener('error', useThumb);
-    target.addEventListener('load', () => {
-      if (target.src === bigSrc && (target.naturalHeight - target.naturalWidth) > 10)
-        useThumb();
-    });
+    const handleLoad = () => {
+      if ((target.naturalHeight - target.naturalWidth) > 10)
+        return handleError();
+      unwatch();
+    };
 
-    target.src = bigSrc ?? thumbSrc;
+    const unwatch = () => {
+      target.removeEventListener('error', handleError);
+      target.removeEventListener('load', handleLoad);
+    };
+
+    target.addEventListener('error', handleError);
+    target.addEventListener('load', handleLoad);
+
+    target.src = images[0];
   }
 })();
