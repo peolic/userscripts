@@ -1,24 +1,25 @@
 // ==UserScript==
 // @name        Porn Pros
 // @author      peolic
-// @version     1.4
+// @version     2.0
 // @description Fix duration on Porn Pros sites
 // @icon        https://i.ibb.co/KjtvXWX/network.png
 // @namespace   https://github.com/peolic
-// @match       https://pornpros.com/video/*
-// @match       https://pornprosnetwork.com/video/*
-// @match       https://passion-hd.com/video/*
-// @match       https://puremature.com/video/*
-// @match       https://povd.com/video/*
-// @match       https://castingcouch-x.com/video/*
-// @match       https://tiny4k.com/video/*
-// @match       https://fantasyhd.com/video/*
-// @match       https://exotic4k.com/video/*
-// @match       https://lubed.com/video/*
-// @match       https://holed.com/video/*
-// @match       https://spyfam.com/video/*
-// @match       https://nannyspy.com/video/*
-// @match       https://bbcpie.com/video/*
+// @match       https://pornpros.com/*
+// @match       https://pornprosnetwork.com/*
+// @match       https://passion-hd.com/*
+// @match       https://puremature.com/*
+// @match       https://povd.com/*
+// @match       https://castingcouch-x.com/*
+// @match       https://tiny4k.com/*
+// @match       https://fantasyhd.com/*
+// @match       https://exotic4k.com/*
+// @match       https://lubed.com/*
+// @match       https://holed.com/*
+// @match       https://spyfam.com/*
+// @match       https://nannyspy.com/*
+// @match       https://bbcpie.com/*
+// @match       https://myveryfirsttime.com/*
 // @grant       none
 // @homepageURL https://github.com/peolic/userscripts
 // @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/porn-pros.user.js
@@ -38,7 +39,7 @@
     return makeQuickSelect(isoDate);
   };
 
-  function apply() {
+  function videoPage() {
     const infoContainer = document.querySelector('div[id$="-stime"]');
     if (!infoContainer || infoContainer.dataset.injected) return;
     infoContainer.dataset.injected = 'true';
@@ -91,6 +92,33 @@
     applyReleaseDate();
   }
 
-  apply();
+  const addDateToVideoCards = () => {
+    Array.from(document.querySelectorAll('.video-releases-list .card')).forEach((card) => {
+      /** @type {HTMLDivElement} */
+      const information = card.querySelector('.card-body .information');
+      /** @type {HTMLElement} */
+      let dateEl = information.querySelector(':scope > p.date');
+      if (!dateEl) {
+        const { date } = card.dataset;
+        if (!date)
+          return;
+
+        dateEl = document.createElement('p');
+        dateEl.classList.add('date');
+        dateEl.innerText = date;
+        information.append(dateEl);
+      }
+
+      const isoDate = makeISODateElement(dateEl.innerText);
+      isoDate.style.marginRight = '.25rem';
+      dateEl.innerText = `(${dateEl.innerText})`;
+      dateEl.prepend(isoDate);
+    });
+  }
+
+  addDateToVideoCards();
+
+  if (/^\/video\/[^/]+/.test(window.location.pathname))
+    return videoPage();
 
 })();
