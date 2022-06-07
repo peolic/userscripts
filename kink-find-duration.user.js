@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Kink - Find Duration
 // @author      peolic
-// @version     1.02
+// @version     1.1
 // @description Add "find duration" link to shoot pages
 // @icon        https://www.kink.com/favicon-32x32.png
 // @namespace   https://github.com/peolic
@@ -13,12 +13,13 @@
 // ==/UserScript==
 
 (() => {
-  const shootTitle = document.querySelector('h1');
+  const shootTitleEl = document.querySelector('h1');
 
   const makeSearchURL = () => {
+    const shootTitle = shootTitleEl.firstChild.textContent.trim();
     const searchParams = new URLSearchParams({
       type: 'shoots',
-      q: `"${shootTitle.firstChild.textContent.trim()}"`,
+      q: `"${shootTitle.replace(/"/g, '')}"`,
       channelIds: document.querySelector('.shoot-page').dataset.sitename,
       publishedYears: document.querySelector('.shoot-date').innerText.match(/, (\d+)$/)[1],
       sort: 'published',
@@ -47,6 +48,6 @@
   findDuration.innerText = 'Find duration';
   findDuration.href = makeSearchURL();
 
-  shootTitle.after(findDuration);
+  shootTitleEl.after(findDuration);
 
 })();
