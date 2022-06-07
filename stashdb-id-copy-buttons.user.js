@@ -246,7 +246,7 @@ button.injected-copy-id:focus {
    * @param {Partial<CSSStyleDeclaration>} styles
    * @returns {E}
    */
-   function setStyles(el, styles) {
+  function setStyles(el, styles) {
     Object.assign(el.style, styles);
     return el;
   }
