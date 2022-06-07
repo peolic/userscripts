@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        StashDB ID Copy Buttons
 // @author      peolic
-// @version     1.4
+// @version     1.5
 // @description Adds copy ID buttons to StashDB
 // @namespace   https://github.com/peolic
 // @match       https://stashdb.org/*
@@ -32,9 +32,11 @@ button.injected-copy-id:focus {
     window.addEventListener(locationChanged, dispatcher);
   }
 
-  function splitLocation(loc=undefined) {
-    if (loc === undefined) loc = window.location;
-    else loc = new URL(loc);
+  /** @param {string} [location] */
+  function splitLocation(location=undefined) {
+    const loc = location === undefined
+      ? window.location
+      : new URL(location);
     const pathname = loc.pathname.replace(/^\//, '');
     return pathname ? pathname.split(/\//g) : [];
   }
@@ -47,7 +49,7 @@ button.injected-copy-id:focus {
     if (pathParts.length === 0) return;
     const [p1, p2, p3] = pathParts;
 
-    if (['performers', 'scenes', 'studios', 'tags'].includes(p1) && p2 && !p3) {
+    if (['performers', 'scenes', 'studios', 'tags'].includes(p1) && p2 && p2 !== 'add' && !p3) {
       return await injectButton(p1);
     }
 
