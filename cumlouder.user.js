@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        CumLouder
 // @author      peolic
-// @version     1.0
+// @version     1.1
 // @description Add site logo and name to video pages. May not work for all videos.
 // @namespace   https://github.com/peolic
 // @include     https://www.cumlouder.com/*
@@ -19,7 +19,7 @@
    * @property {string} logo
    * @property {string} [slug]
    */
-  /** @type {{ [spanish: string]: SiteInfo }} */
+  /** @type {{ [codeName: string]: SiteInfo }} */
   const SITE_MAP = {
     UNK: { name: 'Unknown Site', logo: '' },
     recopilatorios: { name: 'Compilations', logo: '' }, // (not a site)
@@ -32,7 +32,7 @@
     diosasdelapaja: { name: 'Handjob Goddess', logo: 'handjobgoddess.png', slug: 'handjobgoddess' },
     domingas: { name: 'Boob Day', logo: 'boobday.png', slug: 'boobday' },
     dulces18: { name: 'Sweet 18', logo: '18años.png', slug: 'sweet-18' },
-    exnovias: { name: 'Ex-girlfriends', logo: 'exgirlfriends.png', slug: 'ex-girlfriends' },
+    exnovias: { name: 'Ex-Girlfriends', logo: 'exgirlfriends.png', slug: 'ex-girlfriends' },
     follovolumen: { name: 'Fuckin Van', logo: 'fuckinvan.png', slug: 'fuckinvan' },
     giracumlouder: { name: 'Cumlouder Tour', logo: 'cumloudertour.png', slug: 'cumloudertour' },
     mamadasenlacalle: { name: 'Street Suckers', logo: 'streetsuckers.png', slug: 'streetsuckers' },
@@ -50,6 +50,13 @@
     soloculazos: { name: 'Stunning Butts', logo: 'stunningbutts.png', slug: 'stunningbutts' },
     viviendoconleyla: { name: 'Living With Leyla', logo: 'livingwithleyla.png', slug: 'livingwithleyla' },
     viviendoconunapornostar: { name: 'Living With a Pornstar', logo: 'livingwithapornstar.png', slug: 'livingwithapornstar' },
+
+    // Series - https://www.cumlouder.com/series/
+    autoescuela: { name: 'Cumlouder Driving School', logo: '', slug: 'cumlouder-driving-school' },
+    blablacum: { name: 'Bla Bla Cum', logo: '', slug: 'blablacum' },
+    cumcash: { name: 'Cum Cash', logo: '', slug: 'cumcash' },
+    fuckingroom: { name: 'The Fucking Room', logo: '', slug: 'the-fucking-room' },
+    fuckingclinic: { name: 'The Fucking Clinic', logo: '', slug: 'the-fucking-clinic' },
   };
 
   /**
@@ -107,9 +114,9 @@
     siteInfo.append(siteInfoName);
 
     if (data?.name && siteName) {
-      const esName = document.createElement('div');
-      esName.innerText = ` (${siteName})`;
-      siteInfo.append(esName);
+      const codeName = document.createElement('div');
+      codeName.innerText = ` (${siteName})`;
+      siteInfo.append(codeName);
     }
 
     if (code) {
@@ -128,9 +135,10 @@
     GM.addStyle(`
 .video-card-site-name {
   float: right;
-  margin: 10px 0px 0px;
+  margin: 8px 0px 0px;
   padding: 0px 10px;
   color: rgb(136, 136, 136);
+  line-height: 1rem;
   font-size: 12px;
   max-width: 50%;
   white-space: nowrap;
