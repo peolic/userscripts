@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        CumLouder
 // @author      peolic
-// @version     1.1
+// @version     1.2
 // @description Add site logo and name to video pages. May not work for all videos.
 // @namespace   https://github.com/peolic
 // @include     https://www.cumlouder.com/*
@@ -84,16 +84,16 @@
   font-weight: bold;
 }
     `);
+    /** @type {HTMLParagraphElement | null} */
+    const description = (document.querySelector('.sub-video > .content > p'));
+    if (!description)
+      return console.error('unable to find video description element');
+
     /** @type {HTMLLinkElement | null} */
     const imgURL = (document.querySelector('link[as="image"][href*="/img-cumlouder-all/"]'));
     const { siteName, code } = parse(imgURL?.href);
 
     const data = SITE_MAP[siteName || 'UNK'];
-
-    /** @type {HTMLParagraphElement | null} */
-    const description = (document.querySelector('.sub-video > .content > p'));
-    if (!description)
-      return console.error('unable to find video description element');
 
     const siteInfo = document.createElement('div');
     siteInfo.className = 'video-page-site';
@@ -163,7 +163,7 @@
     });
   }
 
-  if (window.location.pathname.startsWith('/porn-video/'))
+  if (document.querySelector('video'))
     videoPage();
 
   videoCards();
