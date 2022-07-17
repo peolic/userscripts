@@ -3,6 +3,7 @@
 // @author      peolic
 // @version     1.2
 // @description Add site logo and name to video pages. May not work for all videos.
+// @icon        https://www.cumlouder.com/favicon.ico
 // @namespace   https://github.com/peolic
 // @include     https://www.cumlouder.com/*
 // @grant       GM.addStyle
