@@ -1,30 +1,19 @@
 // ==UserScript==
-// @name        Wicked - Scene Length
+// @name        Gamma Entertainment - Scene Length
 // @author      peolic
 // @version     1.0
-// @description Add scene length information on Wicked.com
-// @icon        https://static02-cms-fame.gammacdn.com/wicked/m/c2z8t07qbx4c4wwk/apple-icon-57x57-compressor.png
+// @description Add scene length information on Gamma Entertainment sites
+// @icon        https://www.gammaentertainment.com/images/logo_gammae.png
 // @namespace   https://github.com/peolic
-// @match       https://www.wicked.com/*
-// @grant       GM.addStyle
+// @match       https://*.wicked.com/*
+// @grant       none
 // @homepageURL https://github.com/peolic/userscripts
-// @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/wicked.user.js
-// @updateURL   https://raw.githubusercontent.com/peolic/userscripts/main/wicked.user.js
+// @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/gamma-ent.user.js
+// @updateURL   https://raw.githubusercontent.com/peolic/userscripts/main/gamma-ent.user.js
 // ==/UserScript==
 
 (async () => {
   async function main() {
-    //@ts-expect-error
-    GM.addStyle(`
-    .ScenePlayerHeaderDesktop-Length-Text {
-      color: var(--textColorAlt);
-      font-size: 14px;
-    }
-    .SceneDetail-Length-Text {
-      font-size: 11px;
-      color: var(--textColor);
-    }
-    `);
     singleScene();
     sceneThumbs();
   }
@@ -39,8 +28,7 @@
 
     const date = sceneHeader.querySelector('.ScenePlayerHeaderDesktop-Date-Text');
     const length = date.cloneNode(true);
-    const sep = date.previousElementSibling.cloneNode(true);
-    length.classList.replace('ScenePlayerHeaderDesktop-Date-Text', 'ScenePlayerHeaderDesktop-Length-Text');
+    const sep = (date.previousElementSibling || date.nextElementSibling).cloneNode(true);
     length.innerText = `⏱ ${data.length}`;
     length.title = data.length;
     date.after(sep, length);
@@ -56,7 +44,6 @@
 
       const date = sceneThumb.querySelector('.SceneDetail-DatePublished-Text');
       const length = date.cloneNode(true);
-      length.classList.replace('SceneDetail-DatePublished-Text', 'SceneDetail-Length-Text');
       length.innerText = `⏱ ${data.length}`;
       length.title = data.length;
       date.before(length);
