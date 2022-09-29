@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        StashDB ID Copy Buttons
 // @author      peolic
-// @version     1.5
+// @version     1.6
 // @description Adds copy ID buttons to StashDB
 // @namespace   https://github.com/peolic
 // @match       https://stashdb.org/*
@@ -18,9 +18,21 @@
     //@ts-expect-error
     GM.addStyle(`
 button.injected-copy-id {
-    color: #212529;
-    background-color: #f8f9fa;
-    border-color: #f8f9fa;
+    /* https://getbootstrap.com/docs/5.2/components/buttons/ */
+    --bs-btn-color: #000;
+    --bs-btn-bg: #f8f9fa;
+    --bs-btn-border-color: #f8f9fa;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #d3d4d5;
+    --bs-btn-hover-border-color: #c6c7c8;
+    --bs-btn-focus-shadow-rgb: 211,212,213;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #c6c7c8;
+    --bs-btn-active-border-color: #babbbc;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #000;
+    --bs-btn-disabled-bg: #f8f9fa;
+    --bs-btn-disabled-border-color: #f8f9fa;
 }
 
 button.injected-copy-id:focus {
@@ -58,6 +70,11 @@ button.injected-copy-id:focus {
     }
   }
 
+  /**
+   * @param {boolean} [margin=true]
+   * @param {() => string} [uuidGetter]
+   * @returns {HTMLButtonElement}
+   */
   function makeCopyIDButton(margin=true, uuidGetter=undefined) {
     if (uuidGetter === undefined) uuidGetter = () => splitLocation()[1];
     const button = document.createElement('button');
@@ -130,7 +147,7 @@ button.injected-copy-id:focus {
         const button = makeCopyIDButton(false, (e) => {
           const [object, ident] = splitLocation();
           if (!e?.ctrlKey) return ident;
-          const sceneTitle = 
+          const sceneTitle =
             /** @type {HTMLElement[]} */
             ([sceneInfo.querySelector('h6 > a'), sceneInfo.querySelector('h3 > span')])
               .map(e => e.innerText).join(' \u{2013} ');
