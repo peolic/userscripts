@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name        1 Pass For All Sites - Better Episode Image
 // @author      peolic
-// @version     2.0
+// @version     2.1
 // @description Attempt to grab a better episode image.
 // @icon        https://1passforallsites.com/media/favicon/favicon-32x32.png
 // @namespace   https://github.com/peolic
-// @match       https://1passforallsites.com/episode/*
-// @match       https://1passforallsites.com/model?id=*
+// @match       http*://1passforallsites.com/episode/*
+// @match       http*://1passforallsites.com/model?id=*
 // @grant       GM.addStyle
 // @homepageURL https://github.com/peolic/userscripts
 // @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/1passforallsites-big-episode-image.user.js
