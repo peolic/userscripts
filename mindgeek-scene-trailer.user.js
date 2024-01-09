@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name        MindGeek Scene Trailer
 // @author      peolic
-// @version     1.0
+// @version     1.1
 // @description show trailers on MindGeek sites
 // @namespace   https://github.com/peolic
 // @match       http*://*/scene/*/*
+// @match       http*://bangbros.com/video/*/*
 // @grant       none
 // @homepageURL https://github.com/peolic/userscripts
 // @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/mindgeek-scene-trailer.user.js
@@ -18,10 +19,9 @@
   const waitForLoad = async (postInit) => {
     let timeout = 10000;
 
-    const getContentRoot = () => document.querySelector('#root > div[class]:first-of-type');
     while (
-      !Object.getOwnPropertyNames(getContentRoot()).find((p) => /^__(reactFiber[a-z]?|reactInternalInstance)\$/.test(p))
-      || !document.querySelector('script[type="application/ld+json"]')
+      !document.querySelector('script[type="application/ld+json"]')
+      || !document.querySelector('img[src^="https://media-public-ht.project1content.com/"]')
     ) {
       if (timeout <= 0) {
         throw new Error('failed to initialize userscript: react search timed-out');
