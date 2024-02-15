@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        StashDB ID Copy Buttons
 // @author      peolic
-// @version     1.6
+// @version     1.7
 // @description Adds copy ID buttons to StashDB
 // @namespace   https://github.com/peolic
 // @match       https://stashdb.org/*
@@ -72,7 +72,7 @@ button.injected-copy-id:focus {
 
   /**
    * @param {boolean} [margin=true]
-   * @param {() => string} [uuidGetter]
+   * @param {(e?: MouseEvent) => string} [uuidGetter]
    * @returns {HTMLButtonElement}
    */
   function makeCopyIDButton(margin=true, uuidGetter=undefined) {
@@ -85,9 +85,10 @@ button.injected-copy-id:focus {
     button.textContent = '📋';
     button.title = 'Copy ID';
     button.addEventListener('mouseover', (e) => {
+      const uuid = /** @type {(e?: MouseEvent) => string} */ (uuidGetter)(e);
       button.title = !e.ctrlKey
-        ? `Copy ID:\n${uuidGetter(e)}\nHold CTRL to copy as Markdown link.`
-        : `Copy link as Markdown:\n${uuidGetter(e)}`;
+        ? `Copy ID:\n${uuid}\nHold CTRL to copy as Markdown link.`
+        : `Copy link as Markdown:\n${uuid}`;
     });
     button.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -108,7 +109,7 @@ button.injected-copy-id:focus {
     if (object === 'performers') {
       const performerInfo = await elementReadyIn('.PerformerInfo', 2000);
       let target = performerInfo.querySelector('.PerformerInfo-actions');
-      if (!target || target.querySelector('button.injected-copy-id')) {
+      if (performerInfo?.querySelector('button.injected-copy-id')) {
         return;
       }
       try {
@@ -117,19 +118,27 @@ button.injected-copy-id:focus {
           if (!e?.ctrlKey) return ident;
           const performerName =
             /** @type {HTMLElement[]} */
-            (Array.from(performerInfo.querySelectorAll('h3 > span, h3 > small')))
+            (Array.from(performerInfo.querySelectorAll('h3 > span, h3 > small, h3 > del')))
               .map(e => e.innerText).join(' ');
-          return `[${performerName}](/${object}/${ident})`;
+          const origin = e?.shiftKey ? '' : window.location.origin;
+          return `[${performerName}](${origin}/${object}/${ident})`;
         });
-        let container = target.querySelector(':scope .text-end');
+        let container = target?.querySelector(':scope .text-end');
         if (container) {
           // We have buttons, add to them
           button.classList.add('ms-2');
         } else {
-          // TODO: FIX
           container = document.createElement('div');
           container.classList.add('text-end');
-          target.prepend(container);
+          if (target)
+            target.prepend(container);
+          else {
+            /** @type {HTMLHeadingElement} */
+            // @ts-expect-error
+            const h3 = (performerInfo.querySelector('h3'));
+            h3.classList.add('flex-fill');
+            h3.after(container);
+          }
         }
         container.appendChild(button);
       } catch (error) {
@@ -151,7 +160,8 @@ button.injected-copy-id:focus {
             /** @type {HTMLElement[]} */
             ([sceneInfo.querySelector('h6 > a'), sceneInfo.querySelector('h3 > span')])
               .map(e => e.innerText).join(' \u{2013} ');
-          return `[${sceneTitle}](/${object}/${ident})`;
+          const origin = e?.shiftKey ? '' : window.location.origin;
+          return `[${sceneTitle}](${origin}/${object}/${ident})`;
         });
         button.classList.add('ms-2');
         target.appendChild(button);
@@ -170,8 +180,10 @@ button.injected-copy-id:focus {
         const button = makeCopyIDButton(true, (e) => {
           const [object, ident] = splitLocation();
           if (!e?.ctrlKey) return ident;
+          // @ts-expect-error
           const studioName = document.querySelector('.studio-title h3').textContent.trim();
-          return `[${studioName}](/${object}/${ident})`;
+          const origin = e?.shiftKey ? '' : window.location.origin;
+          return `[${studioName}](${origin}/${object}/${ident})`;
         });
         button.classList.add('ms-2');
         target.appendChild(button);
@@ -189,8 +201,10 @@ button.injected-copy-id:focus {
         const button = makeCopyIDButton(false, (e) => {
           const [object, ident] = splitLocation();
           if (!e?.ctrlKey) return ident;
+          // @ts-expect-error
           const tagName = document.querySelector('h3 > em').textContent.trim();
-          return `[${tagName}](/${object}/${ident})`;
+          const origin = e?.shiftKey ? '' : window.location.origin;
+          return `[${tagName}](${origin}/${object}/${ident})`;
         });
         button.classList.add('ms-2');
         target.appendChild(button);
@@ -255,6 +269,7 @@ button.injected-copy-id:focus {
    */
   const elementReadyIn = (selector, timeout) => {
     const promises = [elementReady(selector)];
+    // @ts-expect-error
     if (timeout) promises.push(wait(timeout).then(() => null));
     return Promise.race(promises);
   };
