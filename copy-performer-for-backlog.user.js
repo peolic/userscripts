@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        StashDB - Copy Performer For Backlog
 // @author      peolic
-// @version     1.02
+// @version     1.03
 // @description Adds to performer pages on StashDB a copy button for the backlog spreadsheet ("Performers To Split Up").
 // @namespace   https://github.com/peolic
 // @match       https://stashdb.org/*
@@ -180,7 +180,7 @@ button.injected-copy-id:focus {
     const links = Array.from(performerInfo.querySelectorAll('.card + .float-end > a')).map((a) => a.href);
 
     const performerURL = window.location.origin + window.location.pathname;
-    const iafd = links.find((url) => url.match(/iafd\.com\/person.rme\/perfid=.+/));
+    const iafd = links.find((url) => url.match(/iafd\.com\/person.rme\/(perf)?id=.+/));
     const ixxx = links.find((url) => url.match(/indexxx\.com\/m\/.+/));
 
     let note = '- ?';
