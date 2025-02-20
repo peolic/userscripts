@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Gamma Entertainment - Scene Length
 // @author      peolic
-// @version     1.1
+// @version     1.2
 // @description Add scene length information on Gamma Entertainment sites
 // @icon        https://www.gammaentertainment.com/images/logo_gammae.png
 // @namespace   https://github.com/peolic
@@ -297,6 +297,7 @@
 
 
 (async () => {
+
   async function main() {
     singleScene();
     sceneThumbs();
@@ -385,5 +386,41 @@
     //@ts-expect-error
     el[Object.getOwnPropertyNames(el).find((p) => p.startsWith('__reactFiber$'))];
 
+  // Based on: https://dirask.com/posts/JavaScript-on-location-changed-event-on-url-changed-event-DKeyZj
+  const locationChanged = (function() {
+    const { pushState, replaceState } = history;
+
+    // @ts-expect-error
+    const prefix = GM.info.script.name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-');
+
+    const eventName = `${prefix}$locationchange`;
+    const makeLocationChangeEvent = (/** @type {string} */ source) => new CustomEvent(eventName, { detail: source });
+
+    history.pushState = function(...args) {
+      pushState.apply(history, args);
+      window.dispatchEvent(makeLocationChangeEvent('pushState'));
+    }
+
+    history.replaceState = function(...args) {
+      replaceState.apply(history, args);
+      window.dispatchEvent(makeLocationChangeEvent('replaceState'));
+    }
+
+    window.addEventListener('popstate', function() {
+      window.dispatchEvent(makeLocationChangeEvent('popstate'));
+    });
+
+    return eventName;
+  })();
+
+  window.addEventListener(locationChanged, () => {
+    wait(200).then(main);
+  });
+
   await main();
+
 })();
