@@ -7,6 +7,9 @@
 // @namespace   https://github.com/peolic
 // @match       *://*/*
 // @grant       GM.registerMenuCommand
+// @homepageURL https://github.com/peolic/userscripts
+// @downloadURL https://raw.githubusercontent.com/peolic/userscripts/main/compute-phash.user.js
+// @updateURL   https://raw.githubusercontent.com/peolic/userscripts/main/compute-phash.user.js
 // ==/UserScript==
 
 //@ts-check
