@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Compute PHash
 // @author      peolic
-// @version     1.01
+// @version     1.02
 // @description Compute the Perceptual Hash of an online video (using the StashApp implementation). May not work for every video player.
 // @icon        data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFSElEQVRYR+2We1CUVRjGf9/usty9wQIbqwtoooISKCjeuYyZpqYZasIMiLeGGizTRu020+ikk1I501iGTjlWSl5GkDQdwmugIqmIIJBxMRABZSXYK9vZlUQF7c/6g3fmzHznnPe85/me85zn+6TmpjIr/2FIPQB6GOhh4H/JgMwqR7JYsRrNwiEkMJuxtosmejJHJe0O4kEh7+Ie8nY5Vovl/rwt1yKJ1RIWWbu9THfR1QesVprSdiDf/SVyUytYDJh8g5EbDShulyH11qCIfRFFyiIk774PakotJqoXLsIjJJQan74ELk2kJnUtvdraqAsLIWB5AjKFoguGLgAkk4X6hNcYeOUXe7JFBhemJVNfdJmxAQF45OyxjxtDY7iZsgSPyJH2flveZeRJL9MeE0dG9kG0n2wleN0yvCKns/d0DvdSUkl4IwmZTBR8KLoAkOmt1I8dTYDhjj1N76HlZzcVWa0GomJjmfVdGi6CznbRTk2ah2LudEaEj6Lx+wOo09bRuCCV81VVOIeGMXLrezjMTOJsbR05ag2p76bg7u76dACWqtu0TRnLMx1H3Boxjb1nc8kcHEryxPFM3LkRN5ssRJnCl5bhqmvGNXc/CosRXzGuF+sarQqhGQs+QjWSeOFbKGiMnQ/RY9DOeP7pAO5ln8R9ZTK9Opiqi4pj3+H9nJgwlTW93RiR8wM2bK2aIM75D2WQ2YjqRimODaWIPTF5B9o3UN6pRDLoMXj60e6l4WIfT44WFhD91eeEhQV3aufxa9iwcRvabzfbN7FFVeI7XLNR6uTEgMyd+IkJg9KR67GvkpfxDS0RUYzSDsA/NwuViytnBFNtTQ2MUDqgvpLDxTkplGcdQNdUxwX/YILi40hOntc9AKvJTMPy1QzMy7wvQNEuzlqKwsEB3/o63Fp03OvVh3KjiZLjhyhW+VE2ZChrFsyl/1tJeIZPYe/5PGqnz+WVU9n4yiWOeWrJbG6h1tsHhbsbqa8nEhoa1D0AmUni1qRoBjZX3Regmyc5/YfxU209PuJ81Y1/Yja0olM4Ue49AIcxkczx8sTXZEC161NcgsZRrPHH7KlCvTsNH29/SsfEcNdXgzVQQ+DkSByVyidrQNIZaYoIQtvBvz4kmn1XLpHZ/1mmLY2nvOAyxcVl6AUjfVT9WKz1Y9D2j+kn8p0FQJvXtAm3shmWo+jYyohLhfG5aHKamxmevhWVj+rJAPT5RcgTZ+PRIcA7QoB7MveSFR7NxrQP0Wh80OlahMKt4jq5oT9VgHLPj/Qqv4pDbSm6UVMxOzvjUl+LU2kefwVG0ualptrZlXMHdlM4ewEbt3yAJHXa4iM+0JSegXrzWjt6W5QJAIeOHub0hFi2b9uA8jH69HX15K1YR7AA5Hf1BPlR8ynM3s/kF2YxNDeDkqh55GZl0Kp0ocpDTWXgENK/3oTDQ47YCUB4eP3q9Qw6ssu+uY3Gc5PjyDxzmuYZM1j/0duPUPdPx9pqpnHiBLxc3Tnp4ctZg5kkd2d8S85QEDmTzPx8KkaF01+jZtL4CKKixz7hCMwWKrekYywvfwCg5vcKjrcZCVi0kMXJwki6CzF/Y9MXNJRXUHHiCOdHxxAfMhx5dTXXjx3k1wHDCF2cQHz87G6XP3IEd4uusfPN92nW3XuQXOnlQ/yKJcTEjOsegBhtLCphh1j3h0xOk0rF+lXLOL7hM0puN1Gj8mLVymWER4T8OwBbxs2bdRT+dvWR5MjRYXh4dn75uqt0+1YjhZeKCRzsj9ZPQ0tLK/n5heIqqggKHvxE8D2/5T0M9DDQw8Dfcw1UX7ZkbUIAAAAASUVORK5CYII=
 // @namespace   https://github.com/peolic
@@ -34,8 +34,8 @@ async function computePHash() {
   if (!video.paused) video.pause();
 
   const computeStatus = document.createElement('h1');
-  Object.assign(computeStatus.style, { fontSize: '3.5em', fontFamily: 'monospace' });
-  computeStatus.innerText = `Compute PHAsh: Generating sprite...`;
+  Object.assign(computeStatus.style, { fontSize: '3.5em', fontFamily: 'monospace', margin: '0.1em 0.25em' });
+  computeStatus.innerText = `Compute PHash: Starting...`;
   document.body.prepend(computeStatus);
 
   const videoDuration = video.duration;
@@ -57,6 +57,19 @@ async function computePHash() {
   sprite.height = height * rows;
   const spriteCtx = /** @type {CanvasRenderingContext2D} */ (sprite.getContext('2d', { alpha: false }));
 
+  // Test if canvas will be tainted by drawing the video element on it.
+  try {
+    spriteCtx.drawImage(video, 0, 0, sprite.width, sprite.height);
+    spriteCtx.getImageData(0, 0, sprite.width, sprite.height);
+  } catch (error) {
+    computeStatus.innerText = `Unable to compute PHash: ${error}`;
+    console.error('Unable to compute PHash:', error);
+    return;
+  } finally {
+    spriteCtx.clearRect(0, 0, sprite.width, sprite.height);
+  }
+
+  sprite.style.maxWidth = `${sprite.width}px`;
   computeStatus.after(sprite);
 
   for (let index = 0; index < chunkCount; index++) {
@@ -82,6 +95,8 @@ async function computePHash() {
     const spriteBlob = await new Promise((resolve) => sprite.toBlob(resolve));
     const spriteBlobURL = URL.createObjectURL(spriteBlob);
     const spriteImage = document.createElement('img');
+    spriteImage.width = sprite.width;
+    spriteImage.height = sprite.height;
     spriteImage.addEventListener('load', () => {
       // don't revoke -- enables the option to download the sprite
       // URL.revokeObjectURL(spriteBlobURL);
@@ -202,7 +217,7 @@ async function computePHash() {
       // https://caniuse.com/mdn-api_createimagebitmap_options_resizequality_parameter
       const imageBitmap = await createImageBitmap(
         sprite,
-        { resizeWidth: hashCanvas.width, resizeHeight: hashCanvas.height, resizeQuality }
+        { resizeWidth: hashCanvas.width, resizeHeight: hashCanvas.height, resizeQuality },
       );
       hashCtx.drawImage(imageBitmap, 0, 0);
     } catch (error) {
